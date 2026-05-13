@@ -50,7 +50,7 @@ export const userDropdownItems: UserDropdownItemType[] = [
     {
         label: 'Log Out',
         icon: 'tablerLogout2',
-        url: 'Sign In',
+        url: '/sign-in',
         class: 'text-danger fw-semibold'
     }
 ];

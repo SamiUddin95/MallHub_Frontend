@@ -1,11 +1,11 @@
 import {Routes} from '@angular/router';
-import {Dashboard2Component} from '@/app/views/dashboards/dashboard-2/dashboard.component';
+import {MallAdminDashboardComponent} from '@/app/views/dashboards/mall-admin-dashboard/mall-admin-dashboard.component';
 
 export const DASHBOARDS_ROUTES: Routes = [
     {
         path: 'dashboard',
-        component: Dashboard2Component,
-        data: {title: "Dashboard"},
+        component: MallAdminDashboardComponent,
+        data: {title: "Mall Admin Dashboard"},
     },
 
 ];

@@ -1,0 +1,228 @@
+<div >
+    <!-- Dashboard Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="mb-1 fw-bold">Dashboard Overview</h4>
+            <p class="text-muted mb-0">Welcome back, Admin. Here's what's happening at Dolmen Mall today.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary">
+                <i class="ri-calendar-line me-1"></i> Last 30 Days
+            </button>
+            <button class="btn btn-primary">
+                <i class="ri-file-download-line me-1"></i> Generate Report
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-1">
+        <div class="col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="avatar-sm bg-primary bg-opacity-10 rounded">
+                            <i class="ri-store-2-line text-primary fs-20 d-flex align-items-center justify-content-center h-100"></i>
+                        </div>
+                        <span class="badge bg-success-subtle text-success">
+                            <i class="ri-arrow-up-line"></i> 12%
+                        </span>
+                    </div>
+                    <p class="text-muted mb-1 fs-13">Total Shops</p>
+                    <h3 class="mb-0 fw-bold">142</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="avatar-sm bg-warning bg-opacity-10 rounded">
+                            <i class="ri-shopping-bag-line text-warning fs-20 d-flex align-items-center justify-content-center h-100"></i>
+                        </div>
+                        <span class="badge bg-success-subtle text-success">
+                            <i class="ri-arrow-up-line"></i> 8.2%
+                        </span>
+                    </div>
+                    <p class="text-muted mb-1 fs-13">Total Products</p>
+                    <h3 class="mb-0 fw-bold">24,502</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="avatar-sm bg-info bg-opacity-10 rounded">
+                            <i class="ri-shopping-cart-line text-info fs-20 d-flex align-items-center justify-content-center h-100"></i>
+                        </div>
+                        <span class="badge bg-success-subtle text-success">
+                            <i class="ri-arrow-up-line"></i> 15.5%
+                        </span>
+                    </div>
+                    <p class="text-muted mb-1 fs-13">Total Orders</p>
+                    <h3 class="mb-0 fw-bold">1,240</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="avatar-sm bg-danger bg-opacity-10 rounded">
+                            <i class="ri-line-chart-line text-danger fs-20 d-flex align-items-center justify-content-center h-100"></i>
+                        </div>
+                        <span class="badge bg-danger-subtle text-danger">
+                            <i class="ri-arrow-down-line"></i> 2.4%
+                        </span>
+                    </div>
+                    <p class="text-muted mb-1 fs-13">Mall Revenue</p>
+                    <h3 class="mb-0 fw-bold">$142,500</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts and Activity Row -->
+    <div class="row">
+        <!-- Revenue & Order Trends -->
+        <div class="col-xl-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h5 class="card-title mb-1">Revenue & Order Trends</h5>
+                            <p class="text-muted mb-0 fs-13">Visualizing performance over the last 30 days</p>
+                        </div>
+                        <div class="d-flex gap-3">
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-primary me-2" style="width: 12px; height: 12px;"></span>
+                                <span class="fs-13">Revenue</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-warning me-2" style="width: 12px; height: 12px;"></span>
+                                <span class="fs-13">Orders</span>
+                            </div>
+                        </div>
+                    </div>
+                    <apx-chart
+                        [series]="chartOptions.series!"
+                        [chart]="chartOptions.chart!"
+                        [xaxis]="chartOptions.xaxis!"
+                        [yaxis]="chartOptions.yaxis!"
+                        [dataLabels]="chartOptions.dataLabels!"
+                        [stroke]="chartOptions.stroke!"
+                        [grid]="chartOptions.grid!"
+                        [legend]="chartOptions.legend!"
+                        [plotOptions]="chartOptions.plotOptions!"
+                        [colors]="chartOptions.colors!"
+                    ></apx-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Row -->
+    <div class="row g-1">
+        <!-- Top Performing Shops -->
+        <div class="col-xl-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-1">Top Performing Shops</h5>
+                    <p class="text-muted fs-13 mb-4">By gross revenue this month</p>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="fs-14">Luxe Attire</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-danger" style="width: 85%"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="fs-14">Tech Haven</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-danger" style="width: 70%"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="fs-14">Home Bliss</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-danger" style="width: 55%"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="fs-14">Active Wear</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-danger" style="width: 45%"></div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <a href="#" class="text-primary fs-13 text-decoration-none">View Detailed Shop Analytics →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mall Health Score -->
+        <div class="col-xl-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-1">Mall Health Score</h5>
+                    <p class="text-muted fs-13 mb-2">Based on fulfillment speed & customer ratings</p>
+
+                    <div class="text-center mb-4">
+                        <div class="position-relative d-inline-block">
+                            <div style="width: 180px; height: 180px;" class="d-flex align-items-center justify-content-center">
+                                <svg width="180" height="180" viewBox="0 0 180 180">
+                                    <circle cx="90" cy="90" r="70" fill="none" stroke="#e9ecef" stroke-width="20"/>
+                                    <circle cx="90" cy="90" r="70" fill="none" stroke="#0d6efd" stroke-width="20" 
+                                            stroke-dasharray="440" stroke-dashoffset="66" 
+                                            transform="rotate(-90 90 90)" stroke-linecap="round"/>
+                                </svg>
+                                <div class="position-absolute">
+                                    <h2 class="mb-0 fw-bold">88</h2>
+                                    <p class="text-muted mb-0 fs-12">EXCELLENT</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="text-center">
+                                <p class="text-muted mb-1 fs-13">Avg. Delivery Time</p>
+                                <h5 class="mb-0 fw-bold">2.4 Days</h5>
+                                <div class="progress mt-2" style="height: 4px;">
+                                    <div class="progress-bar bg-primary" style="width: 75%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center">
+                                <p class="text-muted mb-1 fs-13">Customer Satisfaction</p>
+                                <h5 class="mb-0 fw-bold">4.8 / 5.0</h5>
+                                <div class="progress mt-2" style="height: 4px;">
+                                    <div class="progress-bar bg-primary" style="width: 96%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
