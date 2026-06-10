@@ -1,0 +1,157 @@
+// Stat Card
+.stat-card {
+    border: 1px solid var(--ins-border-color);
+    border-radius: 12px;
+    transition: all 0.2s;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+}
+
+// Search Icon
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ins-secondary-color);
+    pointer-events: none;
+}
+
+// Shop Avatar Small
+.shop-avatar-small {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #4169E1, #1E90FF);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+}
+
+// Star Icon
+.star-icon {
+    font-size: 1rem;
+    color: var(--ins-border-color);
+}
+
+// Info Card
+.info-card {
+    border: 1px solid var(--ins-border-color);
+    border-radius: 12px;
+
+    .info-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+}
+
+// Form Controls
+.form-control,
+.form-select {
+    background-color: var(--ins-input-bg);
+    border-color: var(--ins-border-color);
+    color: var(--ins-body-color);
+    border-radius: 8px;
+
+    &:focus {
+        background-color: var(--ins-input-bg);
+        border-color: var(--ins-primary);
+        color: var(--ins-body-color);
+        box-shadow: 0 0 0 0.25rem rgba(65, 105, 225, 0.25);
+    }
+
+    &::placeholder {
+        color: var(--ins-secondary-color);
+    }
+}
+
+// Buttons
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s;
+
+    &.btn-primary {
+        background: linear-gradient(90deg, #4169E1, #1E90FF);
+        border: none;
+
+        &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(65, 105, 225, 0.3);
+        }
+    }
+
+    &.btn-outline-primary {
+        border-color: var(--ins-primary);
+        color: var(--ins-primary);
+
+        &:hover {
+            background: var(--ins-primary);
+            color: white;
+        }
+    }
+
+    &.btn-outline-warning {
+        border-color: var(--ins-warning);
+        color: var(--ins-warning);
+
+        &:hover {
+            background: var(--ins-warning);
+            color: white;
+        }
+    }
+}
+
+// Badge
+.badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+// Card
+.card {
+    background: var(--ins-card-bg);
+    border: 1px solid var(--ins-border-color);
+    border-radius: 12px;
+}
+
+// Responsive
+@media (max-width: 768px) {
+    .stat-card {
+        .card-body {
+            padding: 0.75rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+        }
+    }
+
+    .table {
+        font-size: 0.875rem;
+    }
+
+    .shop-avatar-small {
+        width: 32px;
+        height: 32px;
+        font-size: 0.75rem;
+    }
+}

@@ -1,0 +1,149 @@
+<div class="">
+    <!-- Page Header -->
+    <div class="mb-2">
+        <h3 class="mb-0 mt-1 fw-bold">Products Overview</h3>
+        <p class="text-muted mb-0">Monitor and manage all products across your mall's shops</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-2 mb-0">
+        <div class="col-md-3">
+            <div class="stats-card card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stats-icon bg-primary-subtle text-primary">
+                        <ng-icon name="tablerBox"></ng-icon>
+                    </div>
+                    <div>
+                        <p class="text-muted mb-0 small">TOTAL PRODUCTS</p>
+                        <h3 class="mb-0 fw-bold">{{ totalProducts | number }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stats-card card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stats-icon bg-warning-subtle text-warning">
+                        <ng-icon name="tablerAlertTriangle"></ng-icon>
+                    </div>
+                    <div>
+                        <p class="text-muted mb-0 small">LOW STOCK ALERTS</p>
+                        <h3 class="mb-0 fw-bold">{{ lowStockAlerts }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stats-card card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stats-icon bg-danger-subtle text-danger">
+                        <ng-icon name="tablerCircleX"></ng-icon>
+                    </div>
+                    <div>
+                        <p class="text-muted mb-0 small">OUT OF STOCK</p>
+                        <h3 class="mb-0 fw-bold">{{ outOfStock }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stats-card card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stats-icon bg-success-subtle text-success">
+                        <ng-icon name="tablerCircleCheck"></ng-icon>
+                    </div>
+                    <div>
+                        <p class="text-muted mb-0 small">ACTIVE LISTINGS</p>
+                        <h3 class="mb-0 fw-bold">{{ activeListings | number }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar card mb-1">
+        <div class="position-relative">
+            <ng-icon name="tablerSearch" class="search-icon"></ng-icon>
+            <input 
+                type="text" 
+                class="search-input" 
+                placeholder="Search product name or shop..."
+                [(ngModel)]="searchQuery"
+                (input)="searchProducts()">
+        </div>
+    </div>
+
+    <!-- Products Table -->
+    <div class="card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Name</th>
+                            <th>Shop</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock Level</th>
+                            <th>Visibility</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                <tr *ngFor="let product of getPaginatedProducts()">
+                    <td>
+                        <img [src]="product.image" [alt]="product.name" class="product-image">
+                    </td>
+                    <td>
+                        <div>
+                            <p class="mb-0 fw-semibold">{{ product.name }}</p>
+                            <p class="text-muted small mb-0">{{ product.productCode }}</p>
+                        </div>
+                    </td>
+                    <td>
+                        <a [href]="product.shopLink" class="shop-link">
+                            {{ product.shopName }}
+                            <ng-icon name="tablerExternalLink" class="fs-6"></ng-icon>
+                        </a>
+                    </td>
+                    <td>{{ product.category }}</td>
+                    <td class="fw-semibold">${{ product.price.toFixed(2) }}</td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fw-semibold" 
+                                  [class.text-danger]="product.stockLevel === 0"
+                                  [class.text-warning]="product.stockLevel > 0 && product.stockLevel < 10">
+                                {{ product.stockLevel }} units
+                            </span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-check form-switch">
+                            <input 
+                                class="form-check-input visibility-toggle" 
+                                type="checkbox" 
+                                [checked]="product.isVisible"
+                                (change)="toggleVisibility(product)">
+                        </div>
+                    </td>
+                </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <app-generic-pagination
+                [currentPage]="currentPage"
+                [totalPages]="totalPages"
+                [totalItems]="filteredProducts.length"
+                [itemsPerPage]="itemsPerPage"
+                [showItemsInfo]="true"
+                (pageChange)="goToPage($event)">
+            </app-generic-pagination>
+        </div>
+    </div>
+</div>

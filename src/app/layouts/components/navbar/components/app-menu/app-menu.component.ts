@@ -4,8 +4,9 @@ import {CommonModule} from '@angular/common';
 import {NgIcon} from '@ng-icons/core';
 import {NgbDropdown, NgbDropdownMenu, NgbDropdownToggle} from '@ng-bootstrap/ng-bootstrap';
 import {NavigationEnd, Router, RouterLink} from '@angular/router';
-import {horizontalMenuItems} from '@layouts/components/data';
+import {mallAdminMenuItems, shopAdminMenuItems} from '@layouts/components/data';
 import {filter} from 'rxjs';
+import {AuthService} from '@/app/services/auth.service';
 
 @Component({
     selector: 'app-menu-navbar',
@@ -21,7 +22,11 @@ import {filter} from 'rxjs';
 })
 export class AppMenuComponent {
 
-    constructor(public router: Router) {
+    constructor(
+        public router: Router,
+        private authService: AuthService
+    ) {
+        this.loadMenuItems();
     }
 
     @ViewChild('MenuItemWithChildren', {static: true})
@@ -30,7 +35,22 @@ export class AppMenuComponent {
     @ViewChild('MenuItem', {static: true})
     menuItem!: TemplateRef<{ item: MenuItemType, linkClass?: string }>;
 
-    menuItems = horizontalMenuItems;
+    menuItems: MenuItemType[] = [];
+
+    loadMenuItems() {
+        const menuType = this.authService.getMenuType();
+        
+        switch (menuType) {
+            case 'malladmin':
+                this.menuItems = mallAdminMenuItems;
+                break;
+            case 'shopadmin':
+                this.menuItems = shopAdminMenuItems;
+                break;
+            default:
+                this.menuItems = mallAdminMenuItems;
+        }
+    }
 
     hasSubMenu(item: MenuItemType): boolean {
         return !!item.children;

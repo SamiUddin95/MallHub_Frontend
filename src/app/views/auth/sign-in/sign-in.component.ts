@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { NgIcon } from '@ng-icons/core';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '@/app/services/auth.service';
 
 @Component({
     selector: 'app-sign-in',
@@ -17,14 +18,18 @@ export class SignInComponent {
     email: string = '';
     password: string = '';
 
-    constructor(private router: Router) {}
+    constructor(
+        private router: Router,
+        private authService: AuthService
+    ) {}
 
     signIn() {
         console.log("signIn to admin portal with:", this.email, this.password);
         
-        // Check for malladmin/123 credentials
-        if (this.email === 'malladmin' && this.password === '123') {
-            this.router.navigate(['/admin/dashboard']);
+        if (this.authService.login(this.email, this.password)) {
+            // Get role-based dashboard route
+            const dashboardRoute = this.authService.getDashboardRoute();
+            this.router.navigate([dashboardRoute]);
         } else {
             alert('Invalid credentials. Use malladmin/123');
         }

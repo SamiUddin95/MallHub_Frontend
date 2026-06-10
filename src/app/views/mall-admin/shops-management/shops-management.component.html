@@ -1,0 +1,420 @@
+<div class="p-2">
+    <!-- Page Header -->
+    <div class="mb-1">
+        <h3 class="mb-0 fw-bold">Shops Management</h3>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-2 mb-1">
+        <div class="col-md-3">
+            <div class="stat-card card">
+                <div class="card-body">
+                    <p class="fw-bold mb-0">TOTAL TENANTS</p>
+                    <h3 class="mb-0 fw-bold">{{ totalTenants }}</h3>
+                    <p class="text-primary small mb-0">{{ tenantsGrowth }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card card">
+                <div class="card-body">
+                    <p class="fw-bold mb-0">ACTIVE SHOPS</p>
+                    <h3 class="mb-0 fw-bold">{{ activeShops }}</h3>
+                    <p class="text-muted small mb-0">{{ activePercentage }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card card">
+                <div class="card-body">
+                    <p class="fw-bold mb-0">PENDING APPROVALS</p>
+                    <h3 class="mb-0 fw-bold text-warning">{{ pendingApprovals }}</h3>
+                    <p class="text-warning small mb-0">{{ pendingStatus }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card card">
+                <div class="card-body">
+                    <p class="fw-bold mb-0">SUSPENDED</p>
+                    <h3 class="mb-0 fw-bold text-danger">{{ suspended }}</h3>
+                    <p class="text-success small mb-0">{{ suspendedAlert }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="card mb-1">
+        <div class="card-body">
+            <div class="row g-2 align-items-center">
+                <div class="col-md-4">
+                    <div class="position-relative">
+                        <ng-icon name="tablerSearch" class="search-icon"></ng-icon>
+                        <input 
+                            type="text" 
+                            class="form-control ps-5" 
+                            placeholder="Search by shop name, owner or ID..."
+                            [(ngModel)]="searchQuery"
+                            (input)="searchShops()">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" [(ngModel)]="selectedCategory" (change)="searchShops()">
+                        <option value="all">All Categories</option>
+                        <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" [(ngModel)]="selectedStatus" (change)="searchShops()">
+                        <option value="all">All Status</option>
+                        <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-primary w-100" (click)="registerNewShop()">
+                        <ng-icon name="tablerPlus" class="me-1"></ng-icon>
+                        Register New Shop
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shops Table -->
+    <div class="card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>Shop Details</th>
+                            <th>Category</th>
+                            <th>Owner</th>
+                            <th>Rating</th>
+                            <th>Status</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        <tr *ngFor="let shop of getPaginatedShops()">
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="shop-avatar-small">
+                                        {{ getInitials(shop.name) }}
+                                    </div>
+                                    <div>
+                                        <p class="mb-0 fw-semibold">{{ shop.name }}</p>
+                                        <p class="text-muted small mb-0">{{ shop.id }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ shop.category }}</td>
+                            <td>{{ shop.owner }}</td>
+                            <td>
+                                <div class="d-flex align-items-center gap-1">
+                                    <ng-icon 
+                                        *ngFor="let star of getStars(shop.rating)" 
+                                        [name]="star ? 'tablerStarFilled' : 'tablerStar'"
+                                        [class.text-warning]="star"
+                                        class="star-icon">
+                                    </ng-icon>
+                                    <span class="ms-1 fw-semibold">{{ shop.rating }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span [class]="getStatusClass(shop.status)">
+                                    {{ shop.status }}
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-outline-primary me-1" (click)="editShop(shop)">
+                                    <ng-icon name="tablerEdit"></ng-icon>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" (click)="deleteShop(shop)">
+                                    <ng-icon name="tablerTrash"></ng-icon>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <app-generic-pagination
+                [currentPage]="currentPage"
+                [totalPages]="totalPages"
+                [totalItems]="filteredShops.length"
+                [itemsPerPage]="itemsPerPage"
+                [showItemsInfo]="true"
+                (pageChange)="goToPage($event)">
+            </app-generic-pagination>
+        </div>
+    </div>
+
+    <!-- Info Cards -->
+    <div class="row g-1">
+        <div class="col-md-6">
+            <div class="info-card card">
+                <div class="card-body">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="info-icon bg-primary-subtle">
+                            <ng-icon name="tablerBuildingStore" class="fs-3 text-primary"></ng-icon>
+                        </div>
+                        <div class="flex-fill">
+                            <h6 class="mb-1 fw-semibold">Mall Expansion Available</h6>
+                            <p class="text-muted small mb-2">
+                                You have 12 vacant lots available for leasing in the North Wing. 
+                                New shop applications can be reviewed in the Shop Approvals section.
+                            </p>
+                            <button class="btn btn-sm btn-outline-primary" (click)="viewShopApprovals()">
+                                View Shop Approvals →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="info-card card">
+                <div class="card-body">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="info-icon bg-warning-subtle">
+                            <ng-icon name="tablerChartBar" class="fs-3 text-warning"></ng-icon>
+                        </div>
+                        <div class="flex-fill">
+                            <h6 class="mb-1 fw-semibold">Performance Overview</h6>
+                            <p class="text-muted small mb-2">
+                                Overall mall rating is currently <strong>4.0/5.0</strong> based on average tenant reviews. 
+                                Fashion & Beauty categories remain your top-grossing segments this quarter.
+                            </p>
+                            <button class="btn btn-sm btn-outline-warning">
+                                Detailed Analytics →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Register New Shop Modal -->
+<div class="modal fade" [class.show]="showModal" [style.display]="showModal ? 'block' : 'none'" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header border-0 bg-light">
+                <div>
+                    <h5 class="modal-title fw-bold">{{ isEditMode ? 'Edit Shop' : 'Register New Shop' }}</h5>
+                </div>
+                <button type="button" class="btn-close" (click)="closeModal()"></button>
+            </div>
+            <div class="modal-body card p-3">
+                <form>
+                       <!-- Owner Information Section -->
+                    <h6 class="fw-semibold mb-1 text-primary">
+                        <ng-icon name="tablerUser" class="me-2"></ng-icon>
+                        Owner Information
+                    </h6>
+                    <div class="row mb-2">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold mb-0">Owner Name *</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                [(ngModel)]="ownerName"
+                                name="ownerName"
+                                placeholder="e.g., John Smith">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold mb-0">Email Address</label>
+                            <input 
+                                type="email" 
+                                class="form-control" 
+                                [(ngModel)]="ownerEmail"
+                                name="ownerEmail"
+                                placeholder="e.g., john@example.com">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold mb-0">Phone Number</label>
+                            <input 
+                                type="tel" 
+                                class="form-control" 
+                                [(ngModel)]="ownerPhone"
+                                name="ownerPhone"
+                                placeholder="e.g., +92 300 1234567">
+                        </div>
+                    </div>
+
+                    <!-- Shop Information Section -->
+                    <h6 class="fw-semibold mb-1 mt-3 text-primary">
+                        <ng-icon name="tablerBuildingStore" class="me-2"></ng-icon>
+                        Shop Information
+                    </h6>
+                    <div class="row mb-2">
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold mb-0">Shop Name *</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                [(ngModel)]="shopName"
+                                name="shopName"
+                                placeholder="e.g., Urban Fashion Store">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold mb-0">Category *</label>
+                            <select class="form-select" [(ngModel)]="shopCategory" name="shopCategory">
+                                <option value="">Select Category</option>
+                                <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold mb-0">Shop Location</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                [(ngModel)]="shopLocation"
+                                name="shopLocation"
+                                placeholder="e.g., Ground Floor, Unit G-12">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold mb-0">Shop Size (sq ft)</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                [(ngModel)]="shopSize"
+                                name="shopSize"
+                                placeholder="e.g., 1200">
+                        </div>
+                    </div>
+
+                    <!-- Status Section -->
+                    <h6 class="fw-semibold mb-1 mt-3 text-primary">
+                        <ng-icon name="tablerToggleLeft" class="me-2"></ng-icon>
+                        Shop Status
+                    </h6>
+                    <div class="row mb-2">
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold mb-1">Status</label>
+                            <div class="btn-group w-100" role="group">
+                                <input 
+                                    type="radio" 
+                                    class="btn-check" 
+                                    name="shopStatus" 
+                                    id="statusActive" 
+                                    value="Active"
+                                    [(ngModel)]="shopStatus">
+                                <label class="btn btn-outline-success" for="statusActive">
+                                    <ng-icon name="tablerCheck" class="me-1"></ng-icon>
+                                    Active
+                                </label>
+
+                                <input 
+                                    type="radio" 
+                                    class="btn-check" 
+                                    name="shopStatus" 
+                                    id="statusPending" 
+                                    value="Pending"
+                                    [(ngModel)]="shopStatus">
+                                <label class="btn btn-outline-warning" for="statusPending">
+                                    <ng-icon name="tablerClock" class="me-1"></ng-icon>
+                                    Pending
+                                </label>
+
+                                <input 
+                                    type="radio" 
+                                    class="btn-check" 
+                                    name="shopStatus" 
+                                    id="statusSuspended" 
+                                    value="Suspended"
+                                    [(ngModel)]="shopStatus">
+                                <label class="btn btn-outline-danger" for="statusSuspended">
+                                    <ng-icon name="tablerX" class="me-1"></ng-icon>
+                                    Suspended
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lease Information Section -->
+                    <h6 class="fw-semibold mb-1 mt-3 text-primary">
+                        <ng-icon name="tablerFileText" class="me-2"></ng-icon>
+                        Lease Information
+                    </h6>
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold mb-0">Lease Start Date</label>
+                            <input 
+                                type="date" 
+                                class="form-control" 
+                                [(ngModel)]="leaseStartDate"
+                                name="leaseStartDate">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold mb-0">Lease End Date</label>
+                            <input 
+                                type="date" 
+                                class="form-control" 
+                                [(ngModel)]="leaseEndDate"
+                                name="leaseEndDate">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold mb-0">Monthly Rent ($)</label>
+                            <input 
+                                type="number" 
+                                class="form-control" 
+                                [(ngModel)]="monthlyRent"
+                                name="monthlyRent"
+                                placeholder="e.g., 5000">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold mb-0">Security Deposit ($)</label>
+                            <input 
+                                type="number" 
+                                class="form-control" 
+                                [(ngModel)]="securityDeposit"
+                                name="securityDeposit"
+                                placeholder="e.g., 10000">
+                        </div>
+                    </div>
+
+                    <!-- Legal Information Section -->
+                    <h6 class="fw-semibold mb-1 mt-3 text-primary">
+                        <ng-icon name="tablerShieldCheck" class="me-2"></ng-icon>
+                        Legal Information
+                    </h6>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold mb-0">Business License Number</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                [(ngModel)]="businessLicense"
+                                name="businessLicense"
+                                placeholder="e.g., BL-2024-12345">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold mb-0">Tax ID / NTN</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                [(ngModel)]="taxId"
+                                name="taxId"
+                                placeholder="e.g., 1234567-8">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0 bg-light">
+                <button type="button" class="btn btn-outline-secondary" (click)="closeModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" (click)="saveShop()">
+                    <ng-icon name="tablerCheck" class="me-1"></ng-icon>
+                    {{ isEditMode ? 'Update Shop' : 'Register Shop' }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Backdrop -->
+<div class="modal-backdrop fade" [class.show]="showModal" *ngIf="showModal" (click)="closeModal()"></div>

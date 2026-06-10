@@ -1,0 +1,118 @@
+<div class="p-2">
+    <!-- Page Header -->
+    <div class="mb-3">
+        <h3 class="mb-1 fw-bold">Shop Approvals</h3>
+        <p class="text-muted mb-0">Review and manage incoming merchant registration requests for your mall.</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="d-flex gap-3 mb-3">
+        <div class="stat-box card flex-fill">
+            <div class="text-center py-3">
+                <h2 class="mb-0 fw-bold text-primary">{{ pendingCount }}</h2>
+                <p class="text-muted small mb-0">PENDING</p>
+            </div>
+        </div>
+        <div class="stat-box card flex-fill">
+            <div class="text-center py-3">
+                <h2 class="mb-0 fw-bold">{{ approvedToday }}</h2>
+                <p class="text-muted small mb-0">APPROVED TODAY</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs mb-3">
+        <button 
+            class="filter-btn"
+            [class.active]="activeFilter === 'all'"
+            (click)="setFilter('all')">
+            All Requests ({{ shopRequests.length }})
+        </button>
+        <button 
+            class="filter-btn"
+            [class.active]="activeFilter === 'fast-track'"
+            (click)="setFilter('fast-track')">
+            Fast-track Priority
+        </button>
+        <button 
+            class="filter-btn"
+            [class.active]="activeFilter === 'high-volume'"
+            (click)="setFilter('high-volume')">
+            High-Volume Retail
+        </button>
+    </div>
+
+    <!-- Shop Requests List -->
+    <div class="requests-list">
+        <div class="request-card card mb-2" *ngFor="let shop of filteredRequests">
+            <div class="card-body">
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Avatar -->
+                    <div class="shop-avatar">
+                        {{ getInitials(shop.shopName) }}
+                    </div>
+
+                    <!-- Shop Info -->
+                    <div class="flex-fill">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <h6 class="mb-0 fw-bold">{{ shop.shopName }}</h6>
+                            <span class="badge bg-primary-subtle text-primary">{{ shop.status }}</span>
+                        </div>
+                        <p class="text-muted small mb-0">{{ shop.ownerName }} • {{ shop.category }}</p>
+                    </div>
+
+                    <!-- Submitted Date -->
+                    <div class="text-center me-3">
+                        <p class="text-muted small mb-0">SUBMITTED</p>
+                        <p class="mb-0 fw-semibold small">
+                            <ng-icon name="tablerCalendar" class="me-1"></ng-icon>
+                            {{ shop.submittedDate | date: 'MMM d, yyyy' }}
+                        </p>
+                    </div>
+
+                    <!-- Documents -->
+                    <div class="text-center me-3">
+                        <p class="text-muted small mb-0">DOCUMENTS</p>
+                        <p class="mb-0 fw-semibold small">
+                            <ng-icon name="tablerFiles" class="me-1"></ng-icon>
+                            {{ shop.documentsCount }} Files
+                        </p>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-secondary btn-sm" (click)="rejectShop(shop)">
+                            Reject
+                        </button>
+                        <button class="btn btn-primary btn-sm" (click)="approveShop(shop)">
+                            Approve
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm btn-icon" (click)="viewDetails(shop)">
+                            <ng-icon name="tablerChevronRight"></ng-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Box -->
+    <div class="info-box card mt-3">
+        <div class="card-body">
+            <div class="d-flex align-items-start gap-3">
+                <div class="info-icon">
+                    <ng-icon name="tablerShieldCheck" class="fs-3 text-primary"></ng-icon>
+                </div>
+                <div>
+                    <h6 class="mb-1 fw-semibold">Standard Verification Protocol</h6>
+                    <p class="text-muted small mb-0">
+                        Remember to verify the Trade License and tax compliance certificates for all new merchants. 
+                        Shops approved before 4 PM will have their digital storefronts activated within the same business day. 
+                        For complex categories like Food & Beverage, ensure health permits are up to date.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

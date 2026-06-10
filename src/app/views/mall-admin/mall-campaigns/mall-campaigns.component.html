@@ -1,0 +1,165 @@
+<div class="p-2">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <h3 class="mb-0 fw-bold">Mall Campaigns</h3>
+            <p class="text-muted mb-0 small">Manage promotional banners and featured shops</p>
+        </div>
+        <button class="btn btn-primary" (click)="openModal()">
+            <ng-icon name="tablerPlus" class="me-1"></ng-icon>
+            Add New Campaign
+        </button>
+    </div>
+
+    <!-- Campaigns Table -->
+    <div class="card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>Campaign Title</th>
+                            <th>Promotion Type</th>
+                            <th>Featured Shop</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Status</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        <tr *ngFor="let campaign of getPaginatedCampaigns()">
+                            <td class="fw-semibold">{{ campaign.title }}</td>
+                            <td>{{ campaign.promotionType }}</td>
+                            <td>{{ campaign.featuredShop }}</td>
+                            <td>{{ campaign.startDate | date: 'MMM d, yyyy' }}</td>
+                            <td>{{ campaign.endDate | date: 'MMM d, yyyy' }}</td>
+                            <td>
+                                <span [class]="getStatusClass(campaign.status)">
+                                    {{ campaign.status }}
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-outline-primary me-1" (click)="editCampaign(campaign)">
+                                    <ng-icon name="tablerEdit"></ng-icon>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" (click)="deleteCampaign(campaign.id)">
+                                    <ng-icon name="tablerTrash"></ng-icon>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <app-generic-pagination
+                [currentPage]="currentPage"
+                [totalPages]="totalPages"
+                [totalItems]="filteredCampaigns.length"
+                [itemsPerPage]="itemsPerPage"
+                [showItemsInfo]="true"
+                (pageChange)="goToPage($event)">
+            </app-generic-pagination>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" [class.show]="showModal" [style.display]="showModal ? 'block' : 'none'" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header border-0 bg-light">
+                <div>
+                    <h5 class="modal-title fw-bold">{{ isEditMode ? 'Edit Campaign' : 'Create New Campaign' }}</h5>
+                </div>
+                <button type="button" class="btn-close" (click)="closeModal()"></button>
+            </div>
+            <div class="modal-body card p-3">
+                <form>
+                    <!-- Campaign Title -->
+                    <div class="mb-2">
+                        <label class="form-label fw-semibold mb-0">Campaign Title</label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            [(ngModel)]="campaignTitle"
+                            name="campaignTitle"
+                            placeholder="e.g., Year End Mega Sale">
+                    </div>
+
+                    <!-- Promotion Type & Featured Shop -->
+                    <div class="row mb-2">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold mb-0">Promotion Type</label>
+                            <select class="form-select" [(ngModel)]="promotionType" name="promotionType">
+                                <option *ngFor="let type of promotionTypes" [value]="type">{{ type }}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold mb-0">Primary Featured Shop</label>
+                            <select class="form-select" [(ngModel)]="primaryFeaturedShop" name="primaryFeaturedShop">
+                                <option value="">Choose a shop</option>
+                                <option *ngFor="let shop of shops" [value]="shop">{{ shop }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Start Date & End Date -->
+                    <div class="row mb-2">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold mb-0">Start Date</label>
+                            <input 
+                                type="date" 
+                                class="form-control" 
+                                [(ngModel)]="startDate"
+                                name="startDate">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold mb-0">End Date</label>
+                            <input 
+                                type="date" 
+                                class="form-control" 
+                                [(ngModel)]="endDate"
+                                name="endDate">
+                        </div>
+                    </div>
+
+                    <!-- Banner Upload -->
+                    <div class="mb-2">
+                        <label class="form-label fw-semibold mb-0">Banner Asset (21:9 Recommended)</label>
+                        <div class="upload-area" (click)="triggerFileInput()">
+                            <input 
+                                type="file" 
+                                id="bannerUpload" 
+                                class="d-none" 
+                                accept="image/*"
+                                (change)="onFileSelect($event)">
+                            
+                            <div *ngIf="!bannerPreview" class="text-center py-4">
+                                <ng-icon name="tablerPhoto" class="fs-1 text-primary mb-2"></ng-icon>
+                                <p class="mb-1 fw-semibold">Click to upload or drag and drop</p>
+                                <p class="text-muted small mb-0">SVG, PNG, JPG or GIF (max. 10MB)</p>
+                            </div>
+                            
+                            <div *ngIf="bannerPreview" class="text-center">
+                                <img [src]="bannerPreview" alt="Banner Preview" class="img-fluid rounded">
+                                <p class="text-muted small mt-2 mb-0">Click to change image</p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0 bg-light">
+                <button type="button" class="btn btn-outline-secondary" (click)="closeModal()">Close</button>
+                <button type="button" class="btn btn-primary" (click)="saveCampaign()">
+                    <ng-icon name="tablerRocket" class="me-1"></ng-icon>
+                    {{ isEditMode ? 'Update Campaign' : 'Launch Campaign' }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Backdrop -->
+<div class="modal-backdrop fade" [class.show]="showModal" *ngIf="showModal" (click)="closeModal()"></div>

@@ -1,0 +1,283 @@
+<div class="p-2">
+    <div class="row">
+        <!-- Sidebar Navigation -->
+        <div class="col-lg-3">
+            <div class="settings-sidebar mt-2">
+                <h4 class="mb-0 fw-bold">Mall Settings</h4>
+                <p class="text-muted small mb-1">Configure your mall's public profile, operational details, and regional presence.</p>
+
+                <div class="p-1">
+                <button 
+                    class="settings-nav-item" 
+                    [class.active]="activeSection === 'general'"
+                    (click)="setActiveSection('general')">
+                    <ng-icon name="tablerInfoCircle"></ng-icon>
+                    <span>General Information</span>
+                </button>
+
+                <button 
+                    class="settings-nav-item"
+                    [class.active]="activeSection === 'branding'"
+                    (click)="setActiveSection('branding')">
+                    <ng-icon name="tablerPalette"></ng-icon>
+                    <span>Branding Assets</span>
+                </button>
+
+                <button 
+                    class="settings-nav-item"
+                    [class.active]="activeSection === 'contact'"
+                    (click)="setActiveSection('contact')">
+                    <ng-icon name="tablerPhone"></ng-icon>
+                    <span>Contact & Mail</span>
+                </button>
+
+                <button 
+                    class="settings-nav-item"
+                    [class.active]="activeSection === 'hours'"
+                    (click)="setActiveSection('hours')">
+                    <ng-icon name="tablerClock"></ng-icon>
+                    <span>Operating Hours</span>
+                </button>
+
+                <button 
+                    class="settings-nav-item"
+                    [class.active]="activeSection === 'location'"
+                    (click)="setActiveSection('location')">
+                    <ng-icon name="tablerMapPin"></ng-icon>
+                    <span>Location & Map</span>
+                </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9 p-2">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="mb-0 fw-bold">{{ activeSection === 'general' ? 'General Information' : 
+                        activeSection === 'branding' ? 'Branding Assets' : 
+                        activeSection === 'contact' ? 'Contact & Mail' : 
+                        activeSection === 'hours' ? 'Operating Hours' : 'Location & Map' }}</h4>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary btn-sm" (click)="discardChanges()">
+                        Discard Changes
+                    </button>
+                    <button class="btn btn-primary btn-sm" (click)="saveChanges()">
+                        <ng-icon name="tablerDeviceFloppy" class="me-1"></ng-icon>
+                        Save All Changes
+                    </button>
+                </div>
+            </div>
+
+            <!-- General Information Section -->
+            <div *ngIf="activeSection === 'general'" class="settings-section card">
+                <div class="settings-section-header">
+                    <div class="settings-icon">
+                        <ng-icon name="tablerInfoCircle"></ng-icon>
+                    </div>
+                    <div>
+                        <h5 class="mb-1 fw-semibold">General Information</h5>
+                        <p class="text-muted mb-0 small">Customize the details of your mall as seen by shops and tenants</p>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Mall Category</label>
+                        <input type="text" class="form-control" [(ngModel)]="mallCategory">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Location (Mall Offices)</label>
+                        <input type="text" class="form-control" [(ngModel)]="mallName">
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Public Description</label>
+                        <textarea class="form-control" rows="4" [(ngModel)]="publicDescription"
+                            placeholder="Pakistan Mall is Pakistan's premier shopping destination..."></textarea>
+                        <small class="text-muted">Character left: {{ 500 - publicDescription.length }}</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Branding Assets Section -->
+            <div *ngIf="activeSection === 'branding'" class="settings-section card">
+                <div class="settings-section-header">
+                    <div class="settings-icon">
+                        <ng-icon name="tablerPalette"></ng-icon>
+                    </div>
+                    <div>
+                        <h5 class="mb-1 fw-semibold">Branding Assets</h5>
+                        <p class="text-muted mb-0 small">Customize your mall's visual identity on the marketplace</p>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Mall Hero Banner</label>
+                    <div class="upload-area" (click)="uploadBanner()">
+                        <ng-icon name="tablerUpload" class="fs-1 text-muted mb-2"></ng-icon>
+                        <p class="mb-1 fw-semibold">Upload Banner</p>
+                        <p class="text-muted small mb-0">Recommended size: 1920x600px (Max: 2MB)</p>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Mall Logo</label>
+                    <div class="upload-area" (click)="uploadLogo()">
+                        <ng-icon name="tablerPhoto" class="fs-1 text-muted mb-2"></ng-icon>
+                        <p class="mb-1 fw-semibold">Upload Logo</p>
+                        <p class="text-muted small mb-0">Recommended size: 512x512px (Max: 1MB)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact & Mail Section -->
+            <div *ngIf="activeSection === 'contact'" class="settings-section card">
+                <div class="settings-section-header">
+                    <div class="settings-icon">
+                        <ng-icon name="tablerPhone"></ng-icon>
+                    </div>
+                    <div>
+                        <h5 class="mb-1 fw-semibold">Contact & Mail</h5>
+                        <p class="text-muted mb-0 small">Manage contact information and communication channels</p>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Support Email</label>
+                        <input type="email" class="form-control" [(ngModel)]="supportEmail">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Office Website</label>
+                        <input type="text" class="form-control" [(ngModel)]="officeWebsite">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Office Phone</label>
+                        <input type="tel" class="form-control" [(ngModel)]="officePhone">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Operating Hours Section -->
+            <div *ngIf="activeSection === 'hours'" class="settings-section card">
+                <div class="settings-section-header">
+                    <div class="settings-icon">
+                        <ng-icon name="tablerClock"></ng-icon>
+                    </div>
+                    <div>
+                        <h5 class="mb-1 fw-semibold">Operating Hours</h5>
+                        <p class="text-muted mb-0 small">Set your mall's weekly schedule and availability</p>
+                    </div>
+                </div>
+
+                <table class="operating-hours-table">
+                    <thead>
+                        <tr>
+                            <th>DAY</th>
+                            <th>STATUS</th>
+                            <th>OPENING TIME</th>
+                            <th>CLOSING TIME</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let hour of operatingHours">
+                            <td class="fw-semibold">{{ hour.day }}</td>
+                            <td>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" [(ngModel)]="hour.isOpen">
+                                </div>
+                            </td>
+                            <td>
+                                <input type="time" class="time-input" [(ngModel)]="hour.openTime" [disabled]="!hour.isOpen">
+                            </td>
+                            <td>
+                                <input type="time" class="time-input" [(ngModel)]="hour.closeTime" [disabled]="!hour.isOpen">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="alert alert-warning mt-3 d-flex align-items-center gap-2">
+                    <ng-icon name="tablerAlertTriangle" class="fs-4"></ng-icon>
+                    <div>
+                        <strong>Set Up Holiday Hours:</strong> Use the holiday hours interface to adjust for holidays or special occasions.
+                        <a href="#" class="text-decoration-none ms-2">Set Holiday Hours</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Location & Map Section -->
+            <div *ngIf="activeSection === 'location'" class="settings-section card">
+                <div class="settings-section-header">
+                    <div class="settings-icon">
+                        <ng-icon name="tablerMapPin"></ng-icon>
+                    </div>
+                    <div>
+                        <h5 class="mb-1 fw-semibold">Location & Map</h5>
+                        <p class="text-muted mb-0 small">Provide physical location for store directory and visitor navigation</p>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Physical Address</label>
+                        <input type="text" class="form-control" [(ngModel)]="physicalAddress">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">City</label>
+                        <input type="text" class="form-control" [(ngModel)]="city">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">State/Province</label>
+                        <input type="text" class="form-control" [(ngModel)]="stateProvince">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">Postal Code</label>
+                        <input type="text" class="form-control" [(ngModel)]="postalCode">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Map Preview</label>
+                    <div class="map-container">
+                        <div class="text-center">
+                            <ng-icon name="tablerMap" class="fs-1 text-muted mb-2"></ng-icon>
+                            <p class="text-muted mb-0">DOLMEN MALL</p>
+                            <button class="btn btn-sm btn-outline-primary mt-2">
+                                <ng-icon name="tablerMapPin" class="me-1"></ng-icon>
+                                Adjust Map Location
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configuration Check -->
+            <div class="settings-section card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="settings-icon">
+                            <ng-icon name="tablerCircleCheck"></ng-icon>
+                        </div>
+                        <div>
+                            <h5 class="mb-1 fw-semibold">Configuration Check Complete</h5>
+                            <p class="text-muted mb-0 small">All required settings are configured and ready to be published</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary">
+                        <ng-icon name="tablerRocket" class="me-1"></ng-icon>
+                        Publish Mall Settings
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

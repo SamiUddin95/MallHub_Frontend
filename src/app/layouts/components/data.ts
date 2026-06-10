@@ -11,43 +11,6 @@ type UserDropdownItemType = {
 
 export const userDropdownItems: UserDropdownItemType[] = [
     {
-        label: 'Welcome back!',
-        isHeader: true
-    },
-    {
-        label: 'Profile',
-        icon: 'tablerUserCircle',
-        url: '/pages/profile'
-    },
-    {
-        label: 'Notifications',
-        icon: 'tablerBellRinging',
-        url: ''
-    },
-    {
-        label: 'Balance: $985.25',
-        icon: 'tablerCreditCard',
-        url: '',
-    },
-    {
-        label: 'Account Settings',
-        icon: 'tablerSettings2',
-        url: ''
-    },
-    {
-        label: 'Support Center',
-        icon: 'tablerHeadset',
-        url: ''
-    },
-    {
-        isDivider: true
-    },
-    {
-        label: 'Lock Screen',
-        icon: 'tablerLock',
-        url: '/auth/lock-screen'
-    },
-    {
         label: 'Log Out',
         icon: 'tablerLogout2',
         url: '/sign-in',
@@ -550,47 +513,68 @@ export const menuItems: MenuItemType[] = [
     }
 ];
 
-export const horizontalMenuItems: MenuItemType[] = [
+// Mall Admin Menu Items
+export const mallAdminMenuItems: MenuItemType[] = [
     {
-            label: 'Dashboard',
-            icon: 'tablerLayoutDashboard',
-             url: '/dashboard',
+        label: 'Dashboard',
+        icon: 'tablerLayoutDashboard',
+        url: '/admin/mall-admin/dashboard',
     },
     {
-        label: 'Apps',
-        icon: 'tablerApps',
-        children: [
-
-            {
-                label: 'Users',
-                icon: 'tablerUsers',
-                isCollapsed: true,
-                children: [
-                    {label: 'Contacts', url: '/apps/users/contacts'},
-                    {label: 'Roles', url: '/apps/users/roles'},
-                    {label: 'Permissions', url: '/apps/users/permissions'},
-                ]
-            },
-        ]
+        label: 'Products Overview',
+        icon: 'tablerBox',
+        url: '/admin/mall-admin/products',
     },
     {
-        label: 'Basic Setup',
-        icon: 'tablerTableColumn',
-        isCollapsed: true,
-        children: [
-            {icon: 'tablerWorld', label: 'Country Management', url: '/country-management'},
-            {icon: 'tablerMapPin', label: 'Province Management', url: '/province-management'},
-            {icon: 'tablerBuilding', label: 'City Management', url: '/city-management'},
-            {icon: 'tablerBuildingBank', label: 'Bank Management', url: '/bank-management'},
-            //         {label: 'Table With Delete Button', url: '/tanstack/table-with-delete-button'},
-            //         {label: 'Table With Pagination', url: '/tanstack/table-with-pagination'},
-            //         {label: 'Table With Sort', url: '/tanstack/table-with-sort'},
-            //         {label: 'Table With Checkbox', url: '/tanstack/table-with-checkbox'},
-            //         {label: 'Table With Filters', url: '/tanstack/table-with-filters'},
-            //     ]
-            // },
-        ]
+        label: 'Mall Campaigns',
+        icon: 'tablerSpeakerphone',
+        url: '/admin/mall-admin/campaigns',
     },
-     
-     
+    {
+        label: 'Shop Approvals',
+        icon: 'tablerClipboardCheck',
+        url: '/admin/mall-admin/shop-approvals',
+    },
+    {
+        label: 'Shops Management',
+        icon: 'tablerBuildingStore',
+        url: '/admin/mall-admin/shops',
+    },
 ];
+
+// Shop Admin Menu Items
+export const shopAdminMenuItems: MenuItemType[] = [
+    {
+        label: 'Dashboard',
+        icon: 'tablerLayoutDashboard',
+        url: '/admin/shop-dashboard',
+    },
+    {
+        label: 'My Products',
+        icon: 'tablerBox',
+        url: '/admin/shop/products',
+    },
+    {
+        label: 'Orders',
+        icon: 'tablerShoppingCart',
+        url: '/admin/shop/orders',
+    },
+    {
+        label: 'Inventory',
+        icon: 'tablerPackage',
+        url: '/admin/shop/inventory',
+    },
+    {
+        label: 'Reports',
+        icon: 'tablerChartBar',
+        url: '/admin/shop/reports',
+    },
+    {
+        label: 'Shop Settings',
+        icon: 'tablerSettings',
+        url: '/admin/shop/settings',
+    },
+];
+
+// Default menu (fallback to mall admin)
+export const horizontalMenuItems: MenuItemType[] = mallAdminMenuItems;

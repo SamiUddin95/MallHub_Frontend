@@ -1,0 +1,38 @@
+<div class="pagination-container">
+    <!-- Items Info -->
+    <div *ngIf="showItemsInfo" class="items-info">
+        <span class="text-muted small">
+            Showing {{ getStartItem() }}-{{ getEndItem() }} of {{ totalItems }} items
+        </span>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination-controls">
+        <!-- Previous Button -->
+        <ng-icon name="tablerChevronLeft" 
+        style="cursor: pointer;"
+        (click)="goToPage(currentPage - 1)" 
+        class="me-1"></ng-icon>
+
+        <!-- Page Numbers -->
+        <div class="page-numbers">
+            <button 
+                *ngFor="let page of getPageNumbers()"
+                class="page-btn"
+                [class.active]="page === currentPage"
+                [class.ellipsis]="page === -1"
+                (click)="page > 0 && goToPage(page)"
+                [disabled]="page === -1">
+                {{ page === -1 ? '...' : page }}
+            </button>
+        </div>
+
+        <!-- Next Button -->
+        <ng-icon 
+            class="ms-1" 
+            style="cursor: pointer;"
+            (click)="goToPage(currentPage + 1)"
+            name="tablerChevronRight">
+        </ng-icon>
+    </div>
+</div>

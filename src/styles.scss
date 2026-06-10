@@ -21,6 +21,48 @@
 
 @use "./assets/scss/app.scss";
 
+/* Global Body Background */
+body {
+    background-color: var(--ins-body-bg) !important;
+}
+
+/* Global Table Header Styling */
+.table {
+    thead {
+        // Light mode - Smoke Gray
+    background: linear-gradient(90deg, #123c61, #b9c1cb) !important;        
+        th {
+            color: white !important;
+            font-weight: 600 !important;
+            border-bottom: 2px solid var(--ins-border-color) !important;
+            
+            &:first-child {
+                border-top-left-radius: 8px;
+            }
+            
+            &:last-child {
+                border-top-right-radius: 8px;
+            }
+        }
+    }
+    
+    &.table-bordered {
+        thead {
+            th {
+                border-color: rgba(255, 255, 255, 0.2) !important;
+            }
+        }
+    }
+}
+
+// Dark mode - Blue Gradient
+[data-bs-theme="dark"] {
+    .table {
+        thead {
+    background: linear-gradient(90deg, #525375, #676a6d) !important;        }
+    }
+}
+
   
   .gradient-text {
       background: linear-gradient(90deg, #4169E1, #1E90FF);

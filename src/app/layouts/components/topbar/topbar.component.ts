@@ -1,8 +1,10 @@
 import {Component} from '@angular/core';
 import {RouterLink} from '@angular/router';
 import {NgIcon} from '@ng-icons/core';
+import {CommonModule} from '@angular/common';
 import {LayoutStoreService} from '@core/services/layout-store.service';
 import {LucideAngularModule, Search} from 'lucide-angular';
+import {AuthService} from '@/app/services/auth.service';
 
 import {ThemeTogglerComponent} from '@layouts/components/topbar/components/theme-toggler/theme-toggler.component';
 import {
@@ -13,6 +15,7 @@ import {UserProfileComponent} from '@layouts/components/topbar/components/user-p
 @Component({
     selector: 'app-topbar',
     imports: [
+        CommonModule,
         NgIcon,
         RouterLink,
         LucideAngularModule,
@@ -23,7 +26,13 @@ import {UserProfileComponent} from '@layouts/components/topbar/components/user-p
     templateUrl: './topbar.component.html'
 })
 export class TopbarComponent {
-    constructor(public layout: LayoutStoreService) {
+    dashboardRoute: string = '/admin/mall-admin/dashboard';
+
+    constructor(
+        public layout: LayoutStoreService,
+        private authService: AuthService
+    ) {
+        this.dashboardRoute = this.authService.getDashboardRoute();
     }
 
     toggleSidebar() {
@@ -39,6 +48,25 @@ export class TopbarComponent {
             this.layout.setSidenavSize(currentSize === 'compact' ? 'condensed' : 'compact', false);
         } else {
             this.layout.setSidenavSize(currentSize === 'condensed' ? 'default' : 'condensed');
+        }
+    }
+
+    isMallAdmin(): boolean {
+        return this.authService.getUserRole() === 'malladmin';
+    }
+
+    getRoleDisplayName(): string {
+        const role = this.authService.getUserRole();
+        
+        switch (role) {
+            case 'malladmin':
+                return 'Mall Admin';
+            case 'shopadmin':
+                return 'Shop Admin';
+            case 'superadmin':
+                return 'Super Admin';
+            default:
+                return 'Admin';
         }
     }
 
