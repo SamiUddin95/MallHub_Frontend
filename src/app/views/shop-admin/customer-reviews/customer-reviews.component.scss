@@ -1,0 +1,53 @@
+.stats-card {
+    border: 1px solid #f1f3f5;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.stats-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.review-item {
+    transition: background 0.15s;
+}
+
+.review-item:hover {
+    background: #fafbfc;
+}
+
+.review-avatar img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.product-thumb {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.customer-reviews .text-muted {
+    color: #5a6268 !important;
+}
+
+.customer-reviews p.small {
+    color: #343a40;
+}
+
+.customer-reviews .form-check-input {
+    border: 1.5px solid #495057;
+}

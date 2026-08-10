@@ -1,0 +1,178 @@
+.orders-page {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.stat-card {
+    border-radius: 12px;
+    padding: 1.25rem;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.stat-change {
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+}
+
+.orders-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+
+.tab-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: transparent;
+    color: #6c757d;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.tab-btn:hover {
+    background: #f8f9fa;
+    color: #212529;
+}
+
+.tab-btn.active {
+    background: #f1f3f5;
+    color: #212529;
+    font-weight: 600;
+}
+
+.cancelled-tab {
+    color: #dc3545;
+}
+
+.cancelled-tab:hover {
+    color: #bb2d3b;
+}
+
+.order-id {
+    color: #4169E1;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.customer-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.view-btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.35rem 0.75rem;
+}
+
+.badge {
+    padding: 0.4em 0.75em;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.badge-paid {
+    background: #e6f4ea;
+    color: #1e7e34;
+}
+
+.badge-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.badge-failed {
+    background: #fbe9e7;
+    color: #d32f2f;
+}
+
+.badge-processing {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.badge-in-transit {
+    background: #e0f7fa;
+    color: #00838f;
+}
+
+.badge-delivered {
+    background: #e6f4ea;
+    color: #1e7e34;
+}
+
+.badge-cancelled {
+    background: #fbe9e7;
+    color: #d32f2f;
+}
+
+.product-thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid #e9ecef;
+}
+
+.customer-avatar-lg {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.payment-icon {
+    width: 36px;
+    height: 36px;
+    background: #e6f4ea;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.order-detail-modal {
+    max-height: 90vh;
+}
+
+.order-detail-modal .modal-content {
+    max-height: 90vh;
+    overflow: hidden;
+}
+
+.order-detail-modal .modal-body {
+    max-height: calc(90vh - 130px);
+    overflow-y: auto;
+}

@@ -1,0 +1,150 @@
+<div class="p-2">
+    <div >
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-start mb-1">
+            <div>
+                <h3 class="mb-0 fw-bold">Shop Settings</h3>
+                <p class="text-muted mb-0">Configure your shop profile, operational details, and preferences.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-secondary" (click)="discardChanges()">Discard</button>
+                <button class="btn btn-primary" (click)="saveChanges()">Save Changes</button>
+            </div>
+        </div>
+
+        <!-- Shop Branding -->
+        <div class="settings-section card mb-1">
+            <div class="settings-section-header">
+                <div class="settings-icon">
+                    <ng-icon name="tablerPalette"></ng-icon>
+                </div>
+                <div>
+                    <h5 class="mb-0 fw-semibold">Shop Branding</h5>
+                    <p class="text-muted mb-0 small">Your brand visual identity across the marketplace.</p>
+                </div>
+            </div>
+
+            <div class="row g-2 mb-1">
+                <div class="col-lg-8">
+                    <label class="form-label fw-semibold large mb-0">Shop Banner</label>
+                    <div class="shop-banner" (click)="uploadBanner()">
+                        <img [src]="bannerPreview || 'https://placehold.co/1200x300/png?text=Shop+Banner'" alt="Shop Banner">
+                        <div class="banner-overlay">
+                            <ng-icon name="tablerCamera" class="fs-3"></ng-icon>
+                            <span class="ms-2 fw-semibold">Change Banner</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <label class="form-label fw-semibold large mb-0">Shop Identity</label>
+                    <div class="d-flex flex-column align-items-center justify-content-center h-90 text-center p-3 border rounded-3 bg-light" style="min-height: 150px;">
+                        <div class="shop-logo mb-1" (click)="uploadLogo()">
+                            <img [src]="logoPreview || 'https://placehold.co/120x120/png?text=Logo'" alt="Shop Logo">
+                            <div class="logo-edit">
+                                <ng-icon name="tablerCamera"></ng-icon>
+                            </div>
+                        </div>
+                        <h6 class="fw-semibold mb-0">Shop Identity</h6>
+                        <p class="text-muted small mb-0">Upload a logo and banner that represents your brand personality.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-2 mt-2">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold large mb-0">Shop Name</label>
+                    <input type="text" class="form-control" [(ngModel)]="shopName" name="shopName">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold large mb-0">Shop Description</label>
+                    <textarea class="form-control" rows="1" [(ngModel)]="shopDescription" name="shopDescription" maxlength="500"></textarea>
+                    <small class="text-muted">{{ shopDescription.length }} / 500 characters</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Location & Contact -->
+        <div class="settings-section card mb-1">
+            <div class="settings-section-header">
+                <div class="settings-icon">
+                    <ng-icon name="tablerMapPin"></ng-icon>
+                </div>
+                <div>
+                    <h5 class="mb-1 fw-semibold">Location & Contact</h5>
+                    <p class="text-muted mb-0 small">How customers can reach you and find your physical store.</p>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small d-flex align-items-center gap-2">
+                        <ng-icon name="tablerPhone" class="fs-6 text-muted"></ng-icon>
+                        Contact Number
+                    </label>
+                    <input type="tel" class="form-control" [(ngModel)]="contactNumber" name="contactNumber">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small d-flex align-items-center gap-2">
+                        <ng-icon name="tablerBuildingStore" class="fs-6 text-muted"></ng-icon>
+                        Mall Location / Unit
+                    </label>
+                    <input type="text" class="form-control" [(ngModel)]="mallLocation" name="mallLocation">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small d-flex align-items-center gap-2">
+                        <ng-icon name="tablerMail" class="fs-6 text-muted"></ng-icon>
+                        Support Email
+                    </label>
+                    <input type="email" class="form-control" [(ngModel)]="supportEmail" name="supportEmail">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small d-flex align-items-center gap-2">
+                        <ng-icon name="tablerMapPin" class="fs-6 text-muted"></ng-icon>
+                        City / State
+                    </label>
+                    <input type="text" class="form-control" [(ngModel)]="cityState" name="cityState">
+                </div>
+            </div>
+        </div>
+
+        <!-- Operating Hours -->
+        <div class="settings-section card mb-1">
+            <div class="settings-section-header">
+                <div class="settings-icon">
+                    <ng-icon name="tablerClock"></ng-icon>
+                </div>
+                <div>
+                    <h5 class="mb-1 fw-semibold">Operating Hours</h5>
+                    <p class="text-muted mb-0 small">Set your weekly schedule. Changes will reflect on your shop profile immediately.</p>
+                </div>
+            </div>
+
+            <table class="operating-hours-table">
+                <thead>
+                    <tr>
+                        <th>DAY</th>
+                        <th>STATUS</th>
+                        <th>OPEN</th>
+                        <th>CLOSE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let hour of operatingHours">
+                        <td class="fw-semibold">{{ hour.day }}</td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" [(ngModel)]="hour.isOpen" name="{{hour.day}}Status">
+                            </div>
+                        </td>
+                        <td>
+                            <input type="time" class="time-input form-control" [(ngModel)]="hour.openTime" name="{{hour.day}}Open" [disabled]="!hour.isOpen">
+                        </td>
+                        <td>
+                            <input type="time" class="time-input form-control" [(ngModel)]="hour.closeTime" name="{{hour.day}}Close" [disabled]="!hour.isOpen">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

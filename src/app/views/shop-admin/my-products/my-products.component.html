@@ -1,0 +1,330 @@
+<div class="p-2">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-start mb-2">
+        <div>
+            <h3 class="mb-1 fw-bold">My Products</h3>
+            <p class="text-muted mb-0">Manage your shop inventory, pricing, and availability.</p>
+        </div>
+        <button class="btn btn-primary d-flex align-items-center gap-2" (click)="openModal()">
+            <ng-icon name="tablerPlus"></ng-icon>
+            Add New Product
+        </button>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-2 p-2">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <div class="position-relative flex-grow-1" style="max-width: 260px;">
+                <ng-icon name="tablerSearch" class="position-absolute top-50 translate-middle-y text-muted" style="left: 0.75rem;"></ng-icon>
+                <input
+                    type="text"
+                    class="form-control ps-5"
+                    placeholder="Search products..."
+                    [(ngModel)]="searchQuery"
+                    (input)="filterProducts()">
+            </div>
+
+            <select class="form-select" style="width: 160px;" [(ngModel)]="selectedCategory" (change)="filterProducts()">
+                <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+            </select>
+
+            <select class="form-select" style="width: 140px;" [(ngModel)]="selectedStatus" (change)="filterProducts()">
+                <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+            </select>
+
+            <div class="btn-group ms-auto d-flex align-items-center gap-2">
+                <div class="btn-group" role="group">
+                    <button
+                        type="button"
+                        class="view-toggle d-flex align-items-center gap-1"
+                        [class.active]="viewMode === 'table'"
+                        (click)="viewMode = 'table'">
+                        <ng-icon name="tablerList"></ng-icon>
+                        Table
+                    </button>
+                    <button
+                        type="button"
+                        class="view-toggle d-flex align-items-center gap-1"
+                        [class.active]="viewMode === 'grid'"
+                        (click)="viewMode = 'grid'">
+                        <ng-icon name="tablerLayoutGrid"></ng-icon>
+                        Grid
+                    </button>
+                </div>
+                <span class="text-muted small d-flex align-items-center gap-1" style="white-space: nowrap;">
+                    {{ showingText }}
+                    <ng-icon name="tablerChevronRight" class="fs-6"></ng-icon>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table View -->
+    <div class="card" *ngIf="viewMode === 'table'">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Product Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        <tr *ngFor="let product of getPaginatedProducts()">
+                            <td>
+                                <img [src]="product.image" [alt]="product.name" class="product-image">
+                            </td>
+                            <td>
+                                <div>
+                                    <p class="mb-0 fw-semibold">{{ product.name }}</p>
+                                    <p class="text-muted small mb-0">{{ product.productCode }}</p>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border">{{ product.category }}</span>
+                            </td>
+                            <td class="fw-semibold text-primary">${{ product.price.toFixed(2) }}</td>
+                            <td [class.text-danger]="product.stock === 0" [class.fw-bold]="product.stock === 0">
+                                {{ product.stock }}
+                            </td>
+                            <td>
+                                <span class="status-badge" [class.status-active]="product.status === 'Active'" [class.status-out]="product.status === 'Out of stock'">
+                                    {{ product.status }}
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-outline-primary me-1" (click)="editProduct(product)">
+                                    <ng-icon name="tablerPencil"></ng-icon>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" (click)="deleteProduct(product)">
+                                    <ng-icon name="tablerTrash"></ng-icon>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <app-generic-pagination
+                [currentPage]="currentPage"
+                [totalPages]="totalPages"
+                [totalItems]="totalProducts"
+                [itemsPerPage]="itemsPerPage"
+                [showItemsInfo]="false"
+                (pageChange)="goToPage($event)">
+            </app-generic-pagination>
+        </div>
+    </div>
+
+    <!-- Grid View -->
+    <div class="card p-2" *ngIf="viewMode === 'grid'">
+        <div class="row g-2">
+            <div class="col-md-4 col-lg-3" *ngFor="let product of getPaginatedProducts()">
+                <div class="card h-100">
+                    <img [src]="product.image" [alt]="product.name" class="card-img-top" style="height: 160px; object-fit: cover;">
+                    <div class="card-body">
+                        <h6 class="fw-semibold mb-1">{{ product.name }}</h6>
+                        <p class="text-muted small mb-1">{{ product.productCode }}</p>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-primary fw-semibold">${{ product.price.toFixed(2) }}</span>
+                            <span class="status-badge" [class.status-active]="product.status === 'Active'" [class.status-out]="product.status === 'Out of stock'">
+                                {{ product.status }}
+                            </span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="small" [class.text-danger]="product.stock === 0">Stock: {{ product.stock }}</span>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-link p-0 text-muted" (click)="editProduct(product)">
+                                    <ng-icon name="tablerPencil"></ng-icon>
+                                </button>
+                                <button class="btn btn-link p-0 text-muted" (click)="deleteProduct(product)">
+                                    <ng-icon name="tablerTrash"></ng-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <app-generic-pagination
+            [currentPage]="currentPage"
+            [totalPages]="totalPages"
+            [totalItems]="totalProducts"
+            [itemsPerPage]="itemsPerPage"
+            [showItemsInfo]="false"
+            (pageChange)="goToPage($event)">
+        </app-generic-pagination>
+    </div>
+</div>
+
+<!-- Product Modal -->
+<div class="modal fade" [class.show]="showModal" [style.display]="showModal ? 'block' : 'none'" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-xl product-modal">
+        <div class="modal-content">
+            <div class="modal-header border-0 bg-light p-2 d-flex justify-content-between align-items-start">
+                <div>
+                    <h5 class="modal-title fw-bold mb-0">{{ isEditMode ? 'Edit Product' : 'Add New Product' }}</h5>
+                    <p class="text-muted small mb-0 d-flex align-items-center gap-1 mt-1">
+                        <ng-icon name="tablerClock" class="fs-6"></ng-icon>
+                        Draft automatically saved 2m ago
+                    </p>
+                </div>
+                <div class="d-flex gap-2 align-items-center">
+                    <button type="button" class="btn btn-outline-secondary" (click)="closeModal()">Discard</button>
+                    <button type="button" class="btn btn-primary d-flex align-items-center gap-2" (click)="saveProduct()">
+                        <ng-icon name="tablerDeviceFloppy"></ng-icon>
+                        Save Product
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body p-2">
+                <div class="row g-3">
+                    <div class="col-xl-8">
+                        <!-- General Information -->
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h6 class="fw-bold mb-0">General Information</h6>
+                                <p class="text-muted small mb-2">Fundamental details about your item</p>
+                                <div class="mb-1">
+                                    <label class="form-label fw-semibold small mb-0">Product Name</label>
+                                    <input type="text" class="form-control" [(ngModel)]="productName" name="productName" placeholder="e.g. Premium Leather Smartwatch Strap">
+                                    <p class="text-muted small mt-1 mb-0">A clear name helps customers find your product easily.</p>
+                                </div>
+                                <div class="position-relative">
+                                    <label class="form-label fw-semibold small mb-0">Description</label>
+                                    <span class="position-absolute top-0 end-0 small text-muted mb-0">Rich Text Enabled</span>
+                                    <textarea class="form-control" [(ngModel)]="productDescription" name="productDescription" rows="5" placeholder="Describe the benefits, materials, and size of your product..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product Media -->
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <h6 class="fw-bold mb-0">Product Media</h6>
+                                        <p class="text-muted small mb-0">Upload up to 10 high-resolution images</p>
+                                    </div>
+                                    <ng-icon name="tablerHelpCircle" class="text-muted"></ng-icon>
+                                </div>
+                                <div class="upload-area p-4 text-center" (click)="triggerFileInput()">
+                                    <input type="file" id="productImageUpload" class="d-none" accept="image/*" multiple (change)="onFileSelect($event)">
+                                    <ng-icon name="tablerUpload" class="fs-1 text-muted mb-2"></ng-icon>
+                                    <p class="fw-semibold small mb-1">Drag and drop images here</p>
+                                    <p class="text-muted small mb-2">Supports PNG, JPG (Max 5MB per file)</p>
+                                    <button type="button" class="btn btn-outline-primary btn-sm" (click)="$event.stopPropagation(); triggerFileInput()">Browse Files</button>
+                                </div>
+                                <div class="mt-3" *ngIf="productImages.length > 0">
+                                    <p class="small text-muted text-uppercase fw-semibold mb-2">Current Assets</p>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <div class="asset-thumb" *ngFor="let img of productImages">
+                                            <img [src]="img" class="rounded-3">
+                                        </div>
+                                        <div class="asset-thumb add-more d-flex flex-column align-items-center justify-content-center" (click)="triggerFileInput()">
+                                            <ng-icon name="tablerUpload" class="text-muted mb-1"></ng-icon>
+                                            <span class="small text-muted">Add more</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4">
+                        <!-- Status -->
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h6 class="text-muted small text-uppercase fw-semibold mb-2">Status</h6>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div>
+                                        <p class="fw-semibold small mb-0">Product Active</p>
+                                        <p class="text-muted small mb-0">Visible in your shopfront</p>
+                                    </div>
+                                    <div class="form-check form-switch m-0">
+                                        <input class="form-check-input" type="checkbox" [(ngModel)]="productActive" name="productActive">
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center gap-2 small">
+                                    <div class="form-check form-switch m-0 flex-fill">
+                                        <input class="form-check-input" type="checkbox" [(ngModel)]="liveOnMarketplace" name="liveOnMarketplace" id="liveOnMarketplace">
+                                        <label class="form-check-label" for="liveOnMarketplace">Live on Marketplace</label>
+                                    </div>
+                                    <div class="form-check form-switch m-0 flex-fill">
+                                        <input class="form-check-input" type="checkbox" [(ngModel)]="featuredItem" name="featuredItem" id="featuredItem">
+                                        <label class="form-check-label" for="featuredItem">Featured Item</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Organization -->
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h6 class="text-muted small text-uppercase fw-semibold mb-2">Organization</h6>
+                                <div class="mb-2">
+                                    <label class="form-label small fw-semibold mb-0">Category</label>
+                                    <select class="form-select" [(ngModel)]="productCategory" name="productCategory">
+                                        <option *ngFor="let c of productCategories" [value]="c">{{ c }}</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="form-label small fw-semibold  mb-0">Tags</label>
+                                    <input type="text" class="form-control" [(ngModel)]="productTags" name="productTags" placeholder="e.g. premium, leather, tech">
+                                    <p class="text-muted small mt-1 mb-0">Separate tags with commas</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pricing & Stock -->
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h6 class="text-muted small text-uppercase fw-semibold mb-2">Pricing & Stock</h6>
+                                <div class="row g-2 mb-2">
+                                    <div class="col-6">
+                                        <label class="form-label small fw-semibold mb-0">Base Price</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" class="form-control" [(ngModel)]="productPrice" name="productPrice" placeholder="0.00">
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small fw-semibold mb-0">Discount (%)</label>
+                                        <input type="number" class="form-control" [(ngModel)]="productDiscount" name="productDiscount" placeholder="0">
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small fw-semibold mb-0">Stock Quantity</label>
+                                    <input type="number" class="form-control" [(ngModel)]="productStock" name="productStock" placeholder="100">
+                                </div>
+                                <p class="text-muted small mb-2" *ngIf="productStock !== null && productStock <= 10">
+                                    <ng-icon name="tablerInfoCircle" class="me-1 text-warning"></ng-icon>
+                                    Low stock alert at 10 units
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                                    <span class="fw-semibold small">Final Price:</span>
+                                    <span class="fw-bold text-primary fs-5">${{ finalPrice.toFixed(2) }}</span>
+                                </div>
+                            </div>
+                        </div>
+<!-- 
+                        <button class="btn btn-link text-danger small text-decoration-none p-0" (click)="closeModal()">
+                            <ng-icon name="tablerTrash" class="me-1"></ng-icon>
+                            Delete Draft
+                        </button> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Backdrop -->
+<div class="modal-backdrop fade" [class.show]="showModal" *ngIf="showModal" (click)="closeModal()"></div>

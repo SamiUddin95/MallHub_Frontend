@@ -1,0 +1,126 @@
+.shop-settings-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.settings-section {
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: none;
+}
+
+.settings-section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.settings-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #4169E1, #1E90FF);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.shop-banner {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    height: 180px;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.shop-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.shop-banner:hover .banner-overlay {
+    opacity: 1;
+}
+
+.shop-logo {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+}
+
+.shop-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logo-edit {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 24px;
+    height: 24px;
+    background: #4169E1;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    border: 2px solid #fff;
+}
+
+.operating-hours-table {
+    width: 100%;
+}
+
+.operating-hours-table th {
+    font-weight: 600;
+    color: #6c757d;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    padding: 0.75rem;
+    border-bottom: 2px solid #e9ecef;
+    text-align: left;
+}
+
+.operating-hours-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #f1f3f5;
+    vertical-align: middle;
+}
+
+.time-input {
+    width: 120px;
+}

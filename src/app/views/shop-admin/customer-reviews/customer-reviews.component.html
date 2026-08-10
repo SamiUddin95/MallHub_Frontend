@@ -1,0 +1,209 @@
+<div class="p-2 customer-reviews">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-start mb-2">
+        <div>
+            <h3 class="mb-0 fw-bold">Customer Reviews</h3>
+            <p class="text-muted mb-0">Manage feedback, respond to customers, and track product sentiment.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary d-flex align-items-center gap-2" (click)="exportReviews()">
+                <ng-icon name="tablerDownload"></ng-icon>
+                Export Reviews
+            </button>
+            <button class="btn btn-primary d-flex align-items-center gap-2" (click)="viewPublicShop()">
+                <ng-icon name="tablerExternalLink"></ng-icon>
+                View Public Shop
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="row g-2 mb-2">
+        <div class="col-md-3 col-sm-6">
+            <div class="card stats-card h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="stats-icon text-warning">
+                        <ng-icon name="tablerStar" class="fs-4"></ng-icon>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center gap-2">
+                            <h4 class="fw-bold mb-0">4.8</h4>
+                            <span class="badge text-bg-success">+0.2 this month</span>
+                        </div>
+                        <p class="text-muted small mb-0">Average Rating</p>
+                        <p class="text-muted small mb-0">Across 1,240 reviews</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card stats-card h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="stats-icon text-primary">
+                        <ng-icon name="tablerMessageCheck" class="fs-4"></ng-icon>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center gap-2">
+                            <h4 class="fw-bold mb-0">92%</h4>
+                            <span class="badge text-bg-success">+5% improvement</span>
+                        </div>
+                        <p class="text-muted small mb-0">Response Rate</p>
+                        <p class="text-muted small mb-0">This reporting period</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card stats-card h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="stats-icon text-success">
+                        <ng-icon name="tablerMoodSmile" class="fs-4"></ng-icon>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center gap-2">
+                            <h4 class="fw-bold mb-0">88%</h4>
+                            <span class="badge text-bg-light text-muted border">0% vs last month</span>
+                        </div>
+                        <p class="text-muted small mb-0">Positive Sentiment</p>
+                        <p class="text-muted small mb-0">4/5 star reviews</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card stats-card h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="stats-icon text-info">
+                        <ng-icon name="tablerClock" class="fs-4"></ng-icon>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold mb-0">12</h4>
+                        <p class="text-muted small mb-0">Pending Moderate</p>
+                        <p class="text-muted small mb-0">Needs attention</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-2 p-2">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <div class="position-relative flex-grow-1" style="max-width: 240px;">
+                <ng-icon name="tablerSearch" class="position-absolute top-50 translate-middle-y text-muted" style="left: 0.75rem;"></ng-icon>
+                <input type="text" class="form-control ps-5" placeholder="Search keywords, customer names..." [(ngModel)]="searchQuery" name="searchQuery">
+            </div>
+
+            <select class="form-select" style="width: 120px;" [(ngModel)]="selectedRating" name="selectedRating">
+                <option *ngFor="let r of ratings" [value]="r">{{ r }}</option>
+            </select>
+
+            <select class="form-select" style="width: 160px;" [(ngModel)]="selectedProduct" name="selectedProduct">
+                <option *ngFor="let p of products" [value]="p">{{ p === 'All' ? 'Product: All' : p }}</option>
+            </select>
+
+            <div class="d-flex align-items-center gap-2">
+                <input type="date" class="form-control" style="width: 130px;" [(ngModel)]="startDate" name="startDate">
+                <input type="date" class="form-control" style="width: 130px;" [(ngModel)]="endDate" name="endDate">
+            </div>
+
+            <div class="d-flex gap-2 ms-auto">
+                <button class="btn btn-primary" (click)="filterReviews()">
+                    <ng-icon name="tablerSearch" class="me-1"></ng-icon>
+                    Search
+                </button>
+                <button class="btn btn-outline-secondary" (click)="clearAll()">Clear All</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reviews List -->
+    <div class="card">
+        <div class="card-body p-0">
+            <div class="d-flex align-items-center p-2 border-bottom" *ngIf="getPaginatedReviews().length > 0">
+                <div class="form-check m-0">
+                    <input class="form-check-input" type="checkbox" [(ngModel)]="selectAll" (change)="toggleSelectAll()" name="selectAll">
+                </div>
+                <span class="text-muted small ms-2">Select all</span>
+            </div>
+
+            <div *ngFor="let review of getPaginatedReviews()" class="review-item p-3 border-bottom">
+                <div class="d-flex gap-3">
+                    <div class="form-check mt-1">
+                        <input class="form-check-input" type="checkbox" [(ngModel)]="review.selected" name="selected{{review.id}}">
+                    </div>
+                    <div class="review-avatar">
+                        <img [src]="review.avatar" [alt]="review.customer" class="rounded-circle">
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <div>
+                                <h6 class="fw-bold mb-0">{{ review.customer }}</h6>
+                                <p class="text-muted small mb-0">{{ review.date }}</p>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <span *ngIf="review.addressed" class="badge text-bg-light text-muted border">Addressed</span>
+                                <span *ngIf="review.reported" class="badge text-bg-light text-danger border">Reported</span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-1 mb-2">
+                            <ng-icon *ngFor="let star of getStarsArray(review.rating)" name="tablerStar" class="text-warning fs-6"></ng-icon>
+                        </div>
+
+                        <p class="small mb-3">{{ review.text }}</p>
+
+                        <div class="d-flex align-items-center gap-2 p-2 border rounded-3 bg-light mb-3" style="max-width: fit-content;">
+                            <img [src]="review.productImage" [alt]="review.product" class="product-thumb">
+                            <div>
+                                <p class="fw-semibold small mb-0">{{ review.product }}</p>
+                                <p class="text-muted small mb-0">Verified Buyer</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-2">
+                            <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" (click)="replyReview(review)">
+                                <ng-icon name="tablerMessage"></ng-icon>
+                                Reply
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary" (click)="markAddressed(review)">
+                                Mark as Addressed
+                            </button>
+                        </div>
+
+                        <div *ngIf="review.showReplyBox" class="mt-3">
+                            <div class="d-flex gap-2 align-items-center">
+                                <input type="text" class="form-control form-control-sm" placeholder="Type your reply here..." [(ngModel)]="review.replyText" name="replyText{{review.id}}" (keyup.enter)="sendReply(review)">
+                                <button class="btn btn-sm btn-primary d-flex align-items-center gap-1" (click)="sendReply(review)" [disabled]="!review.replyText?.trim()">
+                                    <ng-icon name="tablerSend"></ng-icon>
+                                    Send
+                                </button>
+                            </div>
+                            <div class="d-flex justify-content-end gap-2 mt-2">
+                                <button class="btn btn-link text-muted small text-decoration-none p-0" (click)="cancelReply(review)">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="filteredReviews.length === 0" class="text-center p-4">
+                <ng-icon name="tablerSearch" class="fs-1 text-muted mb-2"></ng-icon>
+                <p class="text-muted mb-0">No reviews found matching your filters.</p>
+            </div>
+        </div>
+        <!-- Pagination -->
+        <div class="d-flex justify-content-between align-items-center mt-2 flex-wrap gap-2" *ngIf="filteredReviews.length > 0">
+            <span class="text-muted small">{{ showingText }}</span>
+            <app-generic-pagination
+                [currentPage]="currentPage"
+                [totalPages]="totalPages"
+                [totalItems]="totalReviews"
+                [itemsPerPage]="itemsPerPage"
+                [showItemsInfo]="false"
+                (pageChange)="goToPage($event)">
+            </app-generic-pagination>
+        </div>
+    </div>
+    </div>
+

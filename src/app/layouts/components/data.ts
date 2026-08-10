@@ -552,27 +552,22 @@ export const shopAdminMenuItems: MenuItemType[] = [
     {
         label: 'My Products',
         icon: 'tablerBox',
-        url: '/admin/shop/products',
+        url: '/admin/shop-admin/my-products',
     },
     {
         label: 'Orders',
         icon: 'tablerShoppingCart',
-        url: '/admin/shop/orders',
+        url: '/admin/shop-admin/orders',
     },
     {
-        label: 'Inventory',
-        icon: 'tablerPackage',
-        url: '/admin/shop/inventory',
-    },
-    {
-        label: 'Reports',
-        icon: 'tablerChartBar',
-        url: '/admin/shop/reports',
+        label: 'Customer Reviews',
+        icon: 'tablerStar',
+        url: '/admin/shop-admin/customer-reviews',
     },
     {
         label: 'Shop Settings',
         icon: 'tablerSettings',
-        url: '/admin/shop/settings',
+        url: '/admin/shop-admin/shop-settings',
     },
 ];
 

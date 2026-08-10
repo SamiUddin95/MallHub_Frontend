@@ -1,0 +1,375 @@
+<div class="p-2">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-start mb-1">
+        <div>
+            <h3 class="mb-1 fw-bold">Orders</h3>
+            <p class="text-muted mb-0">Manage and track your customer transactions efficiently.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary d-flex align-items-center gap-2" (click)="selectRange()">
+                <ng-icon name="tablerCalendar"></ng-icon>
+                Select Range
+            </button>
+            <button class="btn btn-primary d-flex align-items-center gap-2" (click)="exportCSV()">
+                <ng-icon name="tablerDownload"></ng-icon>
+                Export CSV
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-2 mb-0">
+        <div class="col-md-3" *ngFor="let stat of stats">
+            <div class="stat-card card h-80">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <div class="stat-icon" [style.backgroundColor]="stat.color + '15'" [style.color]="stat.color">
+                        <ng-icon [name]="stat.icon"></ng-icon>
+                    </div>
+                    <span class="stat-change small" [class.text-success]="stat.isPositive" [class.text-danger]="!stat.isPositive">
+                        <ng-icon [name]="stat.isPositive ? 'tablerArrowUpRight' : 'tablerArrowDownRight'" class="me-1"></ng-icon>
+                        {{ stat.change }}
+                    </span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <p class="stat-label text-muted mb-0">{{ stat.label }}</p>
+                    <h4 class="stat-value fw-bold mb-0">{{ stat.value }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Card -->
+    <div class="card orders-card">
+        <!-- Tabs & Filters -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 p-3 border-bottom">
+            <div class="d-flex gap-1 flex-wrap">
+                <button
+                    type="button"
+                    class="tab-btn"
+                    *ngFor="let tab of tabs"
+                    [class.active]="selectedTab === tab.key"
+                    [class.cancelled-tab]="tab.key === 'cancelled' && selectedTab !== 'cancelled'"
+                    (click)="selectTab(tab.key)">
+                    {{ tab.label }}
+                </button>
+            </div>
+            <div class="d-flex gap-2 align-items-center">
+                <div class="position-relative">
+                    <ng-icon name="tablerSearch" class="position-absolute top-50 translate-middle-y text-muted" style="left: 0.75rem;"></ng-icon>
+                    <input
+                        type="text"
+                        class="form-control ps-5"
+                        style="width: 220px;"
+                        placeholder="Search ID, customer..."
+                        [(ngModel)]="searchQuery"
+                        (input)="filterOrders()">
+                </div>
+                <button class="btn btn-light border" (click)="filterOrders()">
+                    <ng-icon name="tablerFilter" class="text-muted"></ng-icon>
+                </button>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Payment</th>
+                        <th>Delivery</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let order of getPaginatedOrders()">
+                        <td>
+                            <span class="order-id">#{{ order.id }}</span>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <img [src]="order.avatar" [alt]="order.customer" class="customer-avatar">
+                                <span class="fw-semibold">{{ order.customer }}</span>
+                            </div>
+                        </td>
+                        <td class="text-muted">{{ order.date }}</td>
+                        <td>{{ order.items }}</td>
+                        <td class="fw-semibold">${{ order.total.toFixed(2) }}</td>
+                        <td>
+                            <span class="badge" [class]="getPaymentClass(order.payment)">{{ order.payment }}</span>
+                        </td>
+                        <td>
+                            <span class="badge" [class]="getDeliveryClass(order.delivery)">{{ order.delivery }}</span>
+                        </td>
+                        <td class="text-end position-relative">
+                            <div class="d-flex justify-content-end align-items-center gap-2">
+                                <button class="btn btn-sm btn-outline-secondary view-btn" (click)="viewDetails(order)">
+                                    View Details
+                                </button>
+                                <div class="dropdown d-inline-block position-relative">
+                                    <button class="btn btn-sm btn-link text-muted p-0" (click)="toggleMenu(order, $event)">
+                                        <ng-icon name="tablerDotsVertical"></ng-icon>
+                                    </button>
+                                    <ul class="dropdown-menu shadow-sm" [class.show]="activeMenuOrder === order" *ngIf="activeMenuOrder === order" style="top: 0; right: 100%; left: auto; margin-top: 0; min-width: 140px;">
+                                        <li class="dropdown-item-text small text-muted text-uppercase px-3 py-1">Mark Status</li>
+                                        <li *ngFor="let opt of statusOptions">
+                                            <a class="dropdown-item" [class.active]="order.status === opt.key" (click)="changeStatus(order, opt.key, $event)">
+                                                {{ opt.label }}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+               <app-generic-pagination
+                [currentPage]="currentPage"
+                [totalPages]="totalPages"
+                [totalItems]="filteredOrders.length"
+                [itemsPerPage]="itemsPerPage"
+                [showItemsInfo]="false"
+                (pageChange)="goToPage($event)">
+            </app-generic-pagination>
+        </div>
+    </div>
+</div>
+
+<!-- Order Details Modal -->
+<div class="modal fade" [class.show]="showDetailsModal" [style.display]="showDetailsModal ? 'block' : 'none'" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-xl order-detail-modal">
+        <div class="modal-content" *ngIf="selectedOrder">
+            <div class="modal-header border-0 bg-light p-2">
+                <div class="d-flex w-100 justify-content-between align-items-start">
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0">
+                            Order {{ selectedOrder.id }}
+                            <span class="badge badge-processing ms-2">{{ selectedOrder.delivery }}</span>
+                        </h5>
+                        <p class="text-muted small mb-0">Placed on {{ selectedOrder.date }}</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-secondary d-flex align-items-center gap-2 btn-sm">
+                            <ng-icon name="tablerPrinter"></ng-icon>
+                            Print Invoice
+                        </button>
+                        <button class="btn btn-primary d-flex align-items-center gap-2 btn-sm">
+                            Update Status
+                            <ng-icon name="tablerChevronRight"></ng-icon>
+                        </button>
+                    </div>
+                </div>
+                <button class="btn-close ms-3" (click)="closeDetailsModal()"></button>
+            </div>
+            <div class="modal-body p-3">
+                <div class="row g-3">
+                    <div class="col-xl-8">
+                        <!-- Order Items -->
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="fw-bold mb-0 d-flex align-items-center gap-2">
+                                        <ng-icon name="tablerPackage" class="text-primary"></ng-icon>
+                                        Order Items
+                                    </h6>
+                                    <span class="text-muted small">{{ selectedOrder.items }} Products</span>
+                                </div>
+                                <table class="table align-middle mb-0">
+                                    <thead>
+                                        <tr class="text-muted small">
+                                            <th>Product</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            <th class="text-end">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let item of orderItems">
+                                            <td>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <img [src]="item.image" [alt]="item.name" class="product-thumb">
+                                                    <div>
+                                                        <p class="fw-semibold mb-0 small">{{ item.name }}</p>
+                                                        <p class="text-muted small mb-0">SKU: {{ item.sku }}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>${{ item.price.toFixed(2) }}</td>
+                                            <td>{{ item.quantity }}</td>
+                                            <td class="text-end fw-semibold">${{ (item.price * item.quantity).toFixed(2) }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Payment Information -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="fw-bold mb-2 d-flex align-items-center gap-2">
+                                    <ng-icon name="tablerCreditCard" class="text-primary"></ng-icon>
+                                    Payment Information
+                                </h6>
+                                <div class="row g-3">
+                                    <div class="col-md-5">
+                                        <div class="payment-method p-3 border rounded-3 bg-light h-100">
+                                            <div class="d-flex align-items-center gap-2 mb-2">
+                                                <div class="payment-icon">
+                                                    <ng-icon name="tablerCircleCheck" class="text-success"></ng-icon>
+                                                </div>
+                                                <div>
+                                                    <p class="fw-semibold mb-0 small">Visa ending in 4242</p>
+                                                    <p class="text-muted small mb-0">Processed on {{ selectedOrder.date }}</p>
+                                                </div>
+                                            </div>
+                                            <span class="badge badge-paid">Paid</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <div class="d-flex justify-content-between small mb-1">
+                                            <span class="text-muted">Subtotal</span>
+                                            <span class="fw-semibold">$1,249.00</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between small mb-1">
+                                            <span class="text-muted">Shipping Cost</span>
+                                            <span class="fw-semibold">$45.00</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between small mb-1">
+                                            <span class="text-muted">Estimated Tax</span>
+                                            <span class="fw-semibold">$93.68</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between small mb-1">
+                                            <span class="text-muted">Discount Applied</span>
+                                            <span class="text-danger fw-semibold">-$50.00</span>
+                                        </div>
+                                        <hr>
+                                        <div class="d-flex justify-content-between">
+                                            <span class="fw-bold">Total Payout</span>
+                                            <span class="fw-bold text-primary fs-5">$1,337.68</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4">
+                        <!-- Customer Profile -->
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h6 class="text-muted small fw-semibold text-uppercase mb-2">Customer Profile</h6>
+                                <div class="d-flex align-items-center gap-3 mb-2">
+                                    <img [src]="selectedOrder.avatar" [alt]="selectedOrder.customer" class="customer-avatar-lg">
+                                    <div>
+                                        <p class="fw-bold mb-0">{{ selectedOrder.customer }}</p>
+                                        <span class="badge bg-primary-subtle text-primary small">PLATINUM CUSTOMER</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center gap-1 mb-1">
+                                    <ng-icon name="tablerMail" class="text-muted"></ng-icon>
+                                    <span class="small text-muted">{{ customerEmail }}</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-1 mb-1">
+                                    <ng-icon name="tablerPhone" class="text-muted"></ng-icon>
+                                    <span class="small text-muted">{{ customerPhone }}</span>
+                                </div>
+                                <a href="#" class="text-decoration-none small d-flex align-items-center gap-1 mt-2">
+                                    View Customer History
+                                    <ng-icon name="tablerChevronRight"></ng-icon>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Shipping -->
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h6 class="text-muted small fw-semibold text-uppercase mb-2 d-flex align-items-center gap-2">
+                                    <ng-icon name="tablerMapPin"></ng-icon>
+                                    Shipping Logistics
+                                </h6>
+                                <div class="mb-2">
+                                    <p class="text-muted small mb-1">Shipping Address</p>
+                                    <p class="small mb-0 fw-semibold">742 Evergreen Terrace</p>
+                                    <p class="small mb-0 text-muted">Springfield, IL 62704</p>
+                                    <p class="small mb-0 text-muted">United States</p>
+                                </div>
+                                <div class="p-2 border rounded-3 bg-light">
+                                    <p class="text-muted small mb-1">Fulfillment Method</p>
+                                    <p class="small fw-semibold mb-0 d-flex align-items-center gap-1">
+                                        <ng-icon name="tablerClock" class="text-primary"></ng-icon>
+                                        Express Overnight (FedEx)
+                                    </p>
+                                </div> 
+                            </div>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="text-muted small fw-semibold text-uppercase mb-2 d-flex align-items-center gap-2">
+                                    <ng-icon name="tablerFileText"></ng-icon>
+                                    Internal Shop Notes
+                                    <ng-icon name="tablerPencil" class="ms-auto text-muted"></ng-icon>
+                                </h6>
+                                <div class="note-box p-3 border rounded-3 bg-light mb-2">
+                                    <p class="small mb-0 text-muted">{{ internalNote }}</p>
+                                </div>
+                                <button class="btn btn-primary w-100" (click)="saveNote()">Save Note</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 bg-light d-flex justify-content-between">
+                <button class="btn btn-link text-danger small text-decoration-none" (click)="closeDetailsModal()">
+                    Cancel Entire Order
+                </button>
+                <button class="btn btn-link text-muted small text-decoration-none" (click)="closeDetailsModal()">
+                    Request Support
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Backdrop -->
+<div class="modal-backdrop fade" [class.show]="showDetailsModal" *ngIf="showDetailsModal" (click)="closeDetailsModal()"></div>
+
+<!-- Select Range Modal -->
+<div class="modal fade" [class.show]="showRangeModal" [style.display]="showRangeModal ? 'block' : 'none'" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 bg-light">
+                <div>
+                    <h5 class="modal-title fw-bold">Select Date Range</h5>
+                    <p class="text-muted small mb-0">Filter orders by a custom date range.</p>
+                </div>
+                <button class="btn-close" (click)="closeRangeModal()"></button>
+            </div>
+            <div class="modal-body card p-3 m-3">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold small">Start Date</label>
+                        <input type="date" class="form-control" [(ngModel)]="startDate" name="startDate">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold small">End Date</label>
+                        <input type="date" class="form-control" [(ngModel)]="endDate" name="endDate">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 bg-light">
+                <button class="btn btn-outline-secondary" (click)="closeRangeModal()">Cancel</button>
+                <button class="btn btn-primary" (click)="applyRange()" [disabled]="!startDate || !endDate">Apply Range</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Range Modal Backdrop -->
+<div class="modal-backdrop fade" [class.show]="showRangeModal" *ngIf="showRangeModal" (click)="closeRangeModal()"></div>
